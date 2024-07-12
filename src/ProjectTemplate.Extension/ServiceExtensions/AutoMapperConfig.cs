@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace ProjectTemplate.Extension
+namespace ProjectTemplate.Extension.ServiceExtensions
 {
     public class AutoMapperConfig
     {

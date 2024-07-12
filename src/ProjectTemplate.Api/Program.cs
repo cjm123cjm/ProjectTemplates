@@ -1,8 +1,11 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using ProjectTemplate.Extension;
+using ProjectTemplate.Common.Config;
+using ProjectTemplate.Extension.ServiceExtensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//autofac
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
     .ConfigureContainer<ContainerBuilder>(builder =>
     {
@@ -16,6 +19,13 @@ builder.Services.AddSwaggerGen();
 //×¢²áAutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 AutoMapperConfig.RegisterMappings();
+
+//redis
+var redis = builder.Configuration.GetSection("Redis");
+builder.Services.Configure<RedisOption>(redis);
+RedisOption redisOption = redis.Get<RedisOption>();
+builder.Services.AddCacheSetup(redisOption);
+
 
 var app = builder.Build();
 

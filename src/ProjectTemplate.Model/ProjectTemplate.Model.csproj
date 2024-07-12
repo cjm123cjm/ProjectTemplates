@@ -12,4 +12,8 @@
     <Folder Include="Inputs\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="SqlSugarCore" Version="5.1.4.162" />
+  </ItemGroup>
+
 </Project>
