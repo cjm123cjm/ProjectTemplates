@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
-using ProjectTemplate.Common.Config;
 using ProjectTemplate.Extension.Redis;
 using ProjectTemplate.Common.Caches;
 

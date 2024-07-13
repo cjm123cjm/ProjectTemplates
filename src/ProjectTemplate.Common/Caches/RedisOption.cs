@@ -1,4 +1,4 @@
-﻿namespace ProjectTemplate.Common.Config
+﻿namespace ProjectTemplate.Common.Caches
 {
     public class RedisOption
     {

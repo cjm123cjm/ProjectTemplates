@@ -1,6 +1,7 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using ProjectTemplate.Common.Config;
+using ProjectTemplate.Common.Caches;
+using ProjectTemplate.Common.DB;
 using ProjectTemplate.Extension.ServiceExtensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,9 +24,13 @@ AutoMapperConfig.RegisterMappings();
 //redis
 var redis = builder.Configuration.GetSection("Redis");
 builder.Services.Configure<RedisOption>(redis);
-RedisOption redisOption = redis.Get<RedisOption>();
+RedisOption redisOption = redis.Get<RedisOption>()!;
 builder.Services.AddCacheSetup(redisOption);
 
+//sqlsugar
+var dbs = builder.Configuration.GetSection("DBS");
+builder.Services.Configure<List<MutiDBOperate>>(dbs);
+builder.Services.AddSqlsugarSetup(builder.Configuration);
 
 var app = builder.Build();
 
