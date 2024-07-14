@@ -10,9 +10,9 @@ namespace ProjectTemplate.Extension.ServiceExtensions
         public static IServiceCollection AddSqlsugarSetup(this IServiceCollection services, IConfiguration configuration)
         {
             var DbsOption = configuration.GetSection("DBS");
-            var listdatabase = DbsOption.Get<List<MutiDBOperate>>()!.Where(i => i.Enabled).ToList();
+            var listdatabase = DbsOption.Get<List<MutiDBOperate>>()!.Where(t => t.Enabled).ToList();
 
-            var mainDbId = configuration.GetSection("MainDB").ToString();
+            var mainDbId = configuration.GetValue<string>("MainDB");
 
             var mainDbModel = listdatabase.Single(d => d.ConnId == mainDbId);
 
@@ -22,9 +22,9 @@ namespace ProjectTemplate.Extension.ServiceExtensions
             BaseDBConfig.MutiConnectionString = (listdatabase, mainDbModel.Slaves);
 
             // 默认添加主数据库连接
-            if (!string.IsNullOrEmpty(configuration.GetValue<string>("MainDB")))
+            if (!string.IsNullOrEmpty(mainDbId))
             {
-                MainDb.CurrentDbConnId = configuration.GetValue<string>("MainDB")!;
+                MainDb.CurrentDbConnId = mainDbId!;
             }
 
             foreach (var database in listdatabase)
@@ -54,10 +54,10 @@ namespace ProjectTemplate.Extension.ServiceExtensions
 
                 BaseDBConfig.AllConfig.Add(config);
             }
-            if (BaseDBConfig.LogConfig is null)
-            {
-                throw new ApplicationException("未配置Log库连接");
-            }
+            //if (BaseDBConfig.LogConfig is null)
+            //{
+            //    throw new ApplicationException("未配置Log库连接");
+            //}
 
             // SqlSugarScope是线程安全，可使用单例注入
             // 参考：https://www.donet5.com/Home/Doc?typeId=1181

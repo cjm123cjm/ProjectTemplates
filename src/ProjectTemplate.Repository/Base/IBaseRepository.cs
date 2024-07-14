@@ -1,15 +1,14 @@
 ﻿using SqlSugar;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace ProjectTemplate.Repository.Base
 {
     public interface IBaseRepository<TEntity> where TEntity : class, new()
     {
-        ISqlSugarClient Db { get; } 
-        Task<TEntity> QueryAsync();
+        ISqlSugarClient Db { get; }
+        Task<long> AddAsync(TEntity entity);
+        Task<List<long>> AddSplitAsync(TEntity entity);
+        Task<List<TEntity>> QueryAsync();
+        Task<List<TEntity>> QuerySplitAsync(Expression<Func<TEntity, bool>> whereExpression, string orderByFields = null);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ProjectTemplate.Common.Profiles;
 
 namespace ProjectTemplate.Extension.ServiceExtensions
 {
@@ -8,7 +9,7 @@ namespace ProjectTemplate.Extension.ServiceExtensions
         {
             return new MapperConfiguration(cfg =>
             {
-                //cfg.AddProfile(new CustomProfile());
+                cfg.AddProfile(new SysUserProfile());
             });
         }
     }

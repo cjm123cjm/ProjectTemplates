@@ -107,7 +107,7 @@ namespace ProjectTemplate.Extension.ServiceExtensions
             await Task.Run(() =>
             {
                 //写入日志
-                //Console.WriteLine("执行成功-->" + JsonConvert.SerializeObject(apiLogAopInfo));
+                Console.WriteLine("执行成功-->" + JsonConvert.SerializeObject(apiLogAopInfo));
             });
         }
 
@@ -116,7 +116,6 @@ namespace ProjectTemplate.Extension.ServiceExtensions
             if (ex != null)
             {
                 //写入日志
-
                 Console.WriteLine("error!!!:" + ex.Message + JsonConvert.SerializeObject(dataIntercept));
             }
         }

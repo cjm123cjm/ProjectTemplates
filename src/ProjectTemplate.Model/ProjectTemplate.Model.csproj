@@ -7,9 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Entity\" />
-    <Folder Include="Dtos\" />
-    <Folder Include="Inputs\" />
+    <Compile Remove="Dtos\**" />
+    <Compile Remove="Inputs\**" />
+    <EmbeddedResource Remove="Dtos\**" />
+    <EmbeddedResource Remove="Inputs\**" />
+    <None Remove="Dtos\**" />
+    <None Remove="Inputs\**" />
   </ItemGroup>
 
   <ItemGroup>

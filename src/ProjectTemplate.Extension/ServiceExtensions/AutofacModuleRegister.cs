@@ -2,7 +2,8 @@
 using Autofac.Extras.DynamicProxy;
 using ProjectTemplate.IService.Base;
 using ProjectTemplate.Repository.Base;
-using ProjectTemplate.Service;
+using ProjectTemplate.Repository.UnitOfWorks;
+using ProjectTemplate.Service.Base;
 using System.Reflection;
 
 namespace ProjectTemplate.Extension.ServiceExtensions
@@ -20,6 +21,7 @@ namespace ProjectTemplate.Extension.ServiceExtensions
 
             builder.RegisterGeneric(typeof(BaseRepository<>)).As(typeof(IBaseRepository<>))
                 .InstancePerDependency(); //注册仓储
+
             builder.RegisterGeneric(typeof(BaseService<,>)).As(typeof(IBaseService<,>))
                 .InstancePerDependency()
                 .EnableInterfaceInterceptors()
@@ -40,6 +42,12 @@ namespace ProjectTemplate.Extension.ServiceExtensions
                 .AsImplementedInterfaces()
                 .InstancePerDependency()
                 .PropertiesAutowired();
+
+            //注册事务
+            builder.RegisterType<UnitOfWorkManage>().As<IUnitOfWorkManage>()
+               .AsImplementedInterfaces()
+               .InstancePerLifetimeScope()
+               .PropertiesAutowired();
         }
     }
 }
