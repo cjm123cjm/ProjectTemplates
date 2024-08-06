@@ -10,6 +10,7 @@ namespace ProjectTemplate.Extension.ServiceExtensions
             return new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile(new SysUserProfile());
+                cfg.AddProfile(new AuditSqlLogProfile());
             });
         }
     }

@@ -16,8 +16,9 @@ namespace ProjectTemplate.Extension.ServiceExtensions
             var serviceDllFile = Path.Combine(basePath, "ProjectTemplate.Service.dll");
             var repositoryDllFile = Path.Combine(basePath, "ProjectTemplate.Repository.dll");
 
-            var aopType = new List<Type> { typeof(ServiceAop) };
+            var aopType = new List<Type> { typeof(ServiceAop), typeof(TranAOP) };
             builder.RegisterType<ServiceAop>();
+            builder.RegisterType<TranAOP>();
 
             builder.RegisterGeneric(typeof(BaseRepository<>)).As(typeof(IBaseRepository<>))
                 .InstancePerDependency(); //注册仓储

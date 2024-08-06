@@ -24,11 +24,22 @@ namespace ProjectTemplate.Service.Base
             return _baseRepository.AddAsync(entity);
         }
 
+        /// <summary>
+        /// 分表添加
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public Task<List<long>> AddSplit(TEntity entity)
         {
             return _baseRepository.AddSplitAsync(entity);
         }
 
+        /// <summary>
+        /// 分表查询
+        /// </summary>
+        /// <param name="whereExpression"></param>
+        /// <param name="orderByFields"></param>
+        /// <returns></returns>
         public async Task<List<TDto>> QuerySplit(Expression<Func<TEntity, bool>> whereExpression, string orderByFields = null)
         {
             var entities = await _baseRepository.QuerySplitAsync(whereExpression, orderByFields);

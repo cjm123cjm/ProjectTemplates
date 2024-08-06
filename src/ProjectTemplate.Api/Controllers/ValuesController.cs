@@ -61,10 +61,11 @@ namespace ProjectTemplate.Api.Controllers
         /// 事务AOP形式
         /// </summary>
         /// <returns></returns>
-        //[HttpGet]
-        //public async Task<IActionResult> AopTran()
-        //{
-
-        //}
+        [HttpGet]
+        public IActionResult AopTran()
+        {
+            //调用service的方法,每个方法上面使用事务特性,[UseTran(Propagation = Propagation.Required)]
+            return Ok();
+        }
     }
 }
