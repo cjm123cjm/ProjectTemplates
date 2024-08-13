@@ -7,16 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Dtos\**" />
     <Compile Remove="Inputs\**" />
-    <EmbeddedResource Remove="Dtos\**" />
     <EmbeddedResource Remove="Inputs\**" />
-    <None Remove="Dtos\**" />
     <None Remove="Inputs\**" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="SqlSugarCore" Version="5.1.4.162" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Entity\Dtos\" />
   </ItemGroup>
 
 </Project>

@@ -16,7 +16,7 @@ namespace ProjectTemplate.Repository.Base
 
         private readonly IUnitOfWorkManage _unitOfWorkManage;
         private SqlSugarScope _dbBase;
-        private ISqlSugarClient _db
+        protected ISqlSugarClient _db
         {
             get
             {

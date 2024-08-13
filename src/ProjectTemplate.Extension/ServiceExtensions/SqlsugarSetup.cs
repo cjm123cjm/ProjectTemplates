@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ProjectTemplate.Common.DB;
+using ProjectTemplate.Common.HttpContextUser;
+using ProjectTemplate.Model.Tenants;
 using SqlSugar;
 
 namespace ProjectTemplate.Extension.ServiceExtensions
@@ -63,7 +65,22 @@ namespace ProjectTemplate.Extension.ServiceExtensions
             // 参考：https://www.donet5.com/Home/Doc?typeId=1181
             services.AddSingleton<ISqlSugarClient>(o =>
             {
-                return new SqlSugarScope(BaseDBConfig.AllConfig);
+                //return new SqlSugarScope(BaseDBConfig.AllConfig);
+
+                //多租户
+                return new SqlSugarScope(BaseDBConfig.AllConfig, db =>
+                {
+                    BaseDBConfig.ValidConfig.ForEach(t =>
+                    {
+                        var dbProvider = db.GetConnectionScope((string)t.ConfigId);
+
+                        var user = o.GetService<IUser>();
+                        if (user != null && user.ID > 0 && user.TenantId > 0)
+                        {
+                            dbProvider.QueryFilter.AddTableFilter<ITenantEntity>(t => t.TenantId == user.TenantId || t.TenantId == 0);
+                        }
+                    });
+                });
             });
 
             return services;

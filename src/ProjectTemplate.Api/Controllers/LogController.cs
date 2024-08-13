@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProjectTemplate.IService;
 
 namespace ProjectTemplate.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize("Permission")]
     public class LogController : ControllerBase
     {
         private readonly IAuditSqlLogService _sqlLogService;

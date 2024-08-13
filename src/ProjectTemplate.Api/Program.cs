@@ -1,8 +1,13 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 using ProjectTemplate.Common.Caches;
 using ProjectTemplate.Common.DB;
+using ProjectTemplate.Common.HttpContextUser;
 using ProjectTemplate.Extension.ServiceExtensions;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +37,40 @@ var dbs = builder.Configuration.GetSection("DBS");
 builder.Services.Configure<List<MutiDBOperate>>(dbs);
 builder.Services.AddSqlsugarSetup(builder.Configuration);
 
+//jwt
+var secret = builder.Configuration.GetValue<string>("JwtOptions:Secret");
+var issuer = builder.Configuration.GetValue<string>("JwtOptions:Issuer");
+var audience = builder.Configuration.GetValue<string>("JwtOptions:Audience");
+var key = Encoding.ASCII.GetBytes(secret);
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = true,
+        ValidIssuer = issuer,
+        ValidAudience = audience,
+        ValidateAudience = true
+    };
+});
+
+//自定义授权策略
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Permission", policy => policy.Requirements.Add(new PermissionRequirement()));
+});
+builder.Services.AddScoped<IAuthorizationRequirement, PermissionRequirementHandler>();
+builder.Services.AddSingleton(new PermissionRequirement());
+builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
+
+//用户信息
+builder.Services.AddScoped<IUser, AspNetUser>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -40,6 +79,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
