@@ -9,6 +9,7 @@ namespace ProjectTemplate.Common.Profiles
         public BusinessTableProfile()
         {
             CreateMap<BusinessTable, BusinessTableDto>().ReverseMap();
+            CreateMap<MultiBusinessTable, MultiBusinessTableDto>().ReverseMap();
         }
     }
 }
