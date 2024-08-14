@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using ProjectTemplate.Common;
+using ProjectTemplate.Common.HttpContextUser;
 using SqlSugar;
 using System.Collections.Concurrent;
 using System.Reflection;
@@ -10,18 +11,20 @@ namespace ProjectTemplate.Repository.UnitOfWorks
     {
         private readonly ISqlSugarClient _sqlSugarClient;
         private readonly ILogger<UnitOfWorkManage> _logger;
+        private readonly IUser _aspNetUser;
 
         private int _tranCount { get; set; }
         public int TranCount => _tranCount;
         private readonly ConcurrentStack<string> TranStack = new();
 
-        public UnitOfWorkManage(ISqlSugarClient sqlSugarClient, ILogger<UnitOfWorkManage> logger)
+        public UnitOfWorkManage(ISqlSugarClient sqlSugarClient, ILogger<UnitOfWorkManage> logger, IUser aspNetUser)
         {
             _sqlSugarClient = sqlSugarClient;
             _logger = logger;
             _tranCount = 0;
+            _aspNetUser = aspNetUser;
         }
-
+        public long TenantId => _aspNetUser.TenantId;
         public SqlSugarScope GetDbClient()
         {
             return _sqlSugarClient as SqlSugarScope;

@@ -71,6 +71,9 @@ builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
 //用户信息
 builder.Services.AddScoped<IUser, AspNetUser>();
 
+//日志
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

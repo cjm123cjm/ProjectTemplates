@@ -7,6 +7,8 @@ namespace ProjectTemplate.Repository.UnitOfWorks
     {
         SqlSugarScope GetDbClient();
         int TranCount { get; }
+        long TenantId { get; }
+
         UnitOfWork CreateUnitOfWork();
         void BeginTran();
         void BeginTran(MethodInfo methodInfo);

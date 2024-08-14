@@ -1,4 +1,6 @@
-﻿using ProjectTemplate.Repository.UnitOfWorks;
+﻿using ProjectTemplate.Common.DB;
+using ProjectTemplate.Model.Tenants;
+using ProjectTemplate.Repository.UnitOfWorks;
 using SqlSugar;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -15,6 +17,7 @@ namespace ProjectTemplate.Repository.Base
         //}
 
         private readonly IUnitOfWorkManage _unitOfWorkManage;
+        private long _tenantId;
         private SqlSugarScope _dbBase;
         protected ISqlSugarClient _db
         {
@@ -24,10 +27,30 @@ namespace ProjectTemplate.Repository.Base
 
                 //切库
                 var tenantAttr = typeof(TEntity).GetCustomAttribute<TenantAttribute>();
-                if(tenantAttr != null)
+                if (tenantAttr != null)
                 {
                     db = _dbBase.GetConnectionScope(tenantAttr.configId.ToString().ToLower());
                     return db;
+                }
+
+                //多租户
+                var mta = typeof(TEntity).GetCustomAttribute<MultiTenantAttribute>();
+                if (mta != null && mta.TenantTypeEnum == TenantTypeEnum.Db)
+                {
+                    if (_tenantId > 0)
+                    {
+                        var tenant = db.Queryable<SysTenant>().WithCache().Where(t => t.Id == _tenantId).First();
+                        if (tenant != null)
+                        {
+                            var itenant = db.AsTenant();
+                            //切库
+                            if (!itenant.IsAnyConnection(tenant.ConfigId))
+                            {
+                                itenant.AddConnection(tenant.GetConnectionConfig());
+                            }
+                            return itenant.GetConnectionScope(tenant.ConfigId);
+                        }
+                    }
                 }
 
                 return db;
@@ -38,6 +61,7 @@ namespace ProjectTemplate.Repository.Base
         {
             _unitOfWorkManage = unitOfWorkManage;
             _dbBase = _unitOfWorkManage.GetDbClient();
+            _tenantId = _unitOfWorkManage.TenantId;
         }
         public async Task<long> AddAsync(TEntity entity)
         {

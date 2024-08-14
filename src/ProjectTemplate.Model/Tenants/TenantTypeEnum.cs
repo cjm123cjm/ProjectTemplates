@@ -16,9 +16,15 @@ namespace ProjectTemplate.Model.Tenants
         Id = 1,
 
         /// <summary>
+        /// 表隔离
+        /// </summary>
+        [Description("表隔离")]
+        Table = 3,
+
+        /// <summary>
         /// 库隔离
         /// </summary>
         [Description("库隔离")]
-        Table = 3
+        Db = 2
     }
 }

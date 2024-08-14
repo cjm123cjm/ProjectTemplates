@@ -16,11 +16,16 @@ namespace ProjectTemplate.Api.Controllers
     {
         private readonly IBaseService<BusinessTable, BusinessTableDto> _baseService;
         private readonly IBaseService<MultiBusinessTable, MultiBusinessTableDto> _multiBusinessTableService;
+        private readonly IBaseService<SysTenant,SysTenantDto> _sysTenantService;
 
-        public TenantController(IBaseService<BusinessTable, BusinessTableDto> baseService, IBaseService<MultiBusinessTable, MultiBusinessTableDto> multiBusinessTableService)
+        public TenantController(
+            IBaseService<BusinessTable, BusinessTableDto> baseService, 
+            IBaseService<MultiBusinessTable, MultiBusinessTableDto> multiBusinessTableService, 
+            IBaseService<SysTenant, SysTenantDto> sysTenantService)
         {
             _baseService = baseService;
             _multiBusinessTableService = multiBusinessTableService;
+            _sysTenantService = sysTenantService;
         }
 
         /// <summary>
@@ -33,12 +38,21 @@ namespace ProjectTemplate.Api.Controllers
         }
 
         /// <summary>
-        /// 多租户-多表字段
+        /// 多租户-多表
         /// </summary>
         /// <returns></returns>
         public async Task<IActionResult> Get2()
         {
             return Ok(await _multiBusinessTableService.Query());
+        }
+
+        /// <summary>
+        /// 多租户-分库
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> Get3()
+        {
+            return Ok(await _sysTenantService.Query());
         }
     }
 }
