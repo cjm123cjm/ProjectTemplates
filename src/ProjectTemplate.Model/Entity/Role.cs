@@ -5,13 +5,8 @@ namespace ProjectTemplate.Model.Entity
     /// <summary>
     /// 角色表
     /// </summary>
-    public class Role
+    public class Role : RootEntityTkey<long>
     {
-        /// <summary>
-        /// 主键
-        /// </summary>
-        [SugarColumn(IsPrimaryKey = true, IsNullable = false)]
-        public long Id { get; set; }
         /// <summary>
         ///获取或设置是否禁用，逻辑上的删除，非物理删除
         /// </summary>

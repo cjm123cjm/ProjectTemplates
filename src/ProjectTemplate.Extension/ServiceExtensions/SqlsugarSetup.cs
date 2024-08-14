@@ -74,6 +74,7 @@ namespace ProjectTemplate.Extension.ServiceExtensions
                     {
                         var dbProvider = db.GetConnectionScope((string)t.ConfigId);
 
+                        //多租户 单表字段
                         var user = o.GetService<IUser>();
                         if (user != null && user.ID > 0 && user.TenantId > 0)
                         {

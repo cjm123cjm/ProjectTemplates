@@ -2,13 +2,8 @@
 
 namespace ProjectTemplate.Model.Entity
 {
-    public class SysUserInfo
+    public class SysUserInfo : RootEntityTkey<long>
     {
-        /// <summary>
-        /// 主键
-        /// </summary>
-        [SugarColumn(IsPrimaryKey = true, IsNullable = false)]
-        public long Id { get; set; }
 
         /// <summary>
         /// 登录账号

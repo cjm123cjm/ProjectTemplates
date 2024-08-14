@@ -5,13 +5,8 @@ namespace ProjectTemplate.Model.Entity
     /// <summary>
     /// 用户跟角色关联表
     /// </summary>
-    public class UserRole
+    public class UserRole : RootEntityTkey<long>
     {
-        /// <summary>
-        /// 主键
-        /// </summary>
-        [SugarColumn(IsPrimaryKey = true, IsNullable = false)]
-        public long Id { get; set; }
 
         /// <summary>
         /// 用户ID

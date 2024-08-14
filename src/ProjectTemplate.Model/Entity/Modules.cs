@@ -5,13 +5,8 @@ namespace ProjectTemplate.Model.Entity
     /// <summary>
     /// 接口API地址信息表
     /// </summary>
-    public class Modules
+    public class Modules : RootEntityTkey<long>
     {
-        /// <summary>
-        /// 主键
-        /// </summary>
-        [SugarColumn(IsPrimaryKey = true, IsNullable = false)]
-        public long Id { get; set; }
         public long ParentId { get; set; }
 
 

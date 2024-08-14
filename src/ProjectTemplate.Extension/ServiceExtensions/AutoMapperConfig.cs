@@ -11,6 +11,7 @@ namespace ProjectTemplate.Extension.ServiceExtensions
             {
                 cfg.AddProfile(new SysUserProfile());
                 cfg.AddProfile(new AuditSqlLogProfile());
+                cfg.AddProfile(new BusinessTableProfile());
             });
         }
     }
