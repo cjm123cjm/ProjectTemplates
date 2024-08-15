@@ -74,6 +74,14 @@ namespace ProjectTemplate.Repository.Base
             return await _db.Queryable<TEntity>().ToListAsync();
         }
 
+        /// <summary>
+        /// 查询缓存
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<TEntity>> QueryWithCacheAsync()
+        {
+            return await _db.Queryable<TEntity>().WithCache().ToListAsync();
+        }
 
         /// <summary>
         /// 分表添加
@@ -101,5 +109,21 @@ namespace ProjectTemplate.Repository.Base
                  .WhereIF(whereExpression != null, whereExpression)
                  .ToListAsync();
         }
+        /// <summary>
+        /// 分表查询缓存
+        /// </summary>
+        /// <param name="whereExpression"></param>
+        /// <param name="orderByFields"></param>
+        /// <returns></returns>
+        public async Task<List<TEntity>> QuerySplitWithCacheAsync(Expression<Func<TEntity, bool>> whereExpression, string orderByFields = null)
+        {
+            return await _db.Queryable<TEntity>()
+                 .SplitTable()
+                 .OrderByIF(!string.IsNullOrWhiteSpace(orderByFields), orderByFields)
+                 .WhereIF(whereExpression != null, whereExpression)
+                 .WithCache()
+                 .ToListAsync();
+        }
+
     }
 }

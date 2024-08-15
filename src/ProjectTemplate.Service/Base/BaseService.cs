@@ -51,5 +51,15 @@ namespace ProjectTemplate.Service.Base
             var entities = await _baseRepository.QueryAsync();
             return _mapper.Map<List<TDto>>(entities);
         }
+
+        /// <summary>
+        /// 查询缓存
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<TDto>> QueryWithCache()
+        {
+            var entities = await _baseRepository.QueryWithCacheAsync();
+            return _mapper.Map<List<TDto>>(entities);
+        }
     }
 }

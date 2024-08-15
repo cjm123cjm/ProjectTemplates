@@ -11,5 +11,6 @@ namespace ProjectTemplate.IService.Base
         Task<List<long>> AddSplit(TEntity entity);
         Task<List<TDto>> Query();
         Task<List<TDto>> QuerySplit(Expression<Func<TEntity, bool>> whereExpression, string orderByFields = null);
+        Task<List<TDto>> QueryWithCache();
     }
 }

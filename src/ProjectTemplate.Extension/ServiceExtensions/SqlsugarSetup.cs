@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ProjectTemplate.Common;
+using ProjectTemplate.Common.Caches;
 using ProjectTemplate.Common.DB;
 using ProjectTemplate.Common.HttpContextUser;
-using ProjectTemplate.Model.Tenants;
 using SqlSugar;
+using System.Text.RegularExpressions;
 
 namespace ProjectTemplate.Extension.ServiceExtensions
 {
@@ -23,6 +25,8 @@ namespace ProjectTemplate.Extension.ServiceExtensions
 
             BaseDBConfig.MutiConnectionString = (listdatabase, mainDbModel.Slaves);
 
+            var sp = services.BuildServiceProvider();
+            ICaching caching = sp.GetRequiredService<ICaching>();
             // 默认添加主数据库连接
             if (!string.IsNullOrEmpty(mainDbId))
             {
@@ -42,7 +46,12 @@ namespace ProjectTemplate.Extension.ServiceExtensions
                         IsAutoRemoveDataCache = true,
                         SqlServerCodeFirstNvarchar = true,
                     },
-                    InitKeyType = InitKeyType.Attribute
+                    InitKeyType = InitKeyType.Attribute,
+                    // 自定义特性(缓存)
+                    ConfigureExternalServices = new ConfigureExternalServices()
+                    {
+                        DataInfoCacheService = new SqlSugarCacheService(caching),
+                    },
                 };
 
                 if (SqlSugarConst.LogConfigId.ToLower().Equals(database.ConnId.ToLower()))
@@ -63,7 +72,7 @@ namespace ProjectTemplate.Extension.ServiceExtensions
 
             // SqlSugarScope是线程安全，可使用单例注入
             // 参考：https://www.donet5.com/Home/Doc?typeId=1181
-            services.AddSingleton<ISqlSugarClient>(o =>
+            _ = services.AddSingleton<ISqlSugarClient>(o =>
             {
                 //return new SqlSugarScope(BaseDBConfig.AllConfig);
 
@@ -74,17 +83,42 @@ namespace ProjectTemplate.Extension.ServiceExtensions
                     {
                         var dbProvider = db.GetConnectionScope((string)t.ConfigId);
 
-                        //多租户 单表字段
+                        //多租户
                         var user = o.GetService<IUser>();
-                        if (user != null && user.ID > 0 && user.TenantId > 0)
+                        RepositorySetting.SetTenantEntityFilter(dbProvider, user);
+
+                        // 打印SQL语句
+                        dbProvider.Aop.OnLogExecuting = (s, parameters) =>
                         {
-                            dbProvider.QueryFilter.AddTableFilter<ITenantEntity>(t => t.TenantId == user.TenantId || t.TenantId == 0);
-                        }
+                            SqlSugarAop.OnLogExecuting(dbProvider, user?.Name.ObjToString(), ExtractTableName(s),
+                                Enum.GetName(typeof(SugarActionType), dbProvider.SugarActionType), s, parameters,
+                                t);
+                        };
                     });
                 });
             });
 
             return services;
+        }
+
+        private static string ExtractTableName(string sql)
+        {
+            // 匹配 SQL 语句中的表名的正则表达式
+            //string regexPattern = @"\s*(?:UPDATE|DELETE\s+FROM|SELECT\s+\*\s+FROM)\s+(\w+)";
+            string regexPattern = @"(?i)(?:FROM|UPDATE|DELETE\s+FROM)\s+`(.+?)`";
+            Regex regex = new Regex(regexPattern, RegexOptions.IgnoreCase);
+            Match match = regex.Match(sql);
+
+            if (match.Success)
+            {
+                // 提取匹配到的表名
+                return match.Groups[1].Value;
+            }
+            else
+            {
+                // 如果没有匹配到表名，则返回空字符串或者抛出异常等处理
+                return string.Empty;
+            }
         }
     }
 }

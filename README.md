@@ -37,3 +37,7 @@ ProjectTemplate.Extension：扩展层，Automapper、Autofact...写在这一层
 多租户多表：根据TenantId生成多表，比如用户1的TenantId为10001，用户表2的TeanantId为10203，那么就会生成两张表：MultiBusinessTable_10001、MultiBusinessTable_10203。
 
 多租户多库：根据用户的TenantId到SysTenant表里查询数据(TenantId=SysTenant.id)，拿到Connection，根据Connection切换库操作。
+
+
+
+## SqlSugar日志输出与自动缓存

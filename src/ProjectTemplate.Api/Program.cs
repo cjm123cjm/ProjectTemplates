@@ -7,6 +7,7 @@ using ProjectTemplate.Common.Caches;
 using ProjectTemplate.Common.DB;
 using ProjectTemplate.Common.HttpContextUser;
 using ProjectTemplate.Extension.ServiceExtensions;
+using Serilog;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -71,8 +72,14 @@ builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
 //用户信息
 builder.Services.AddScoped<IUser, AspNetUser>();
 
-//日志
-
+//日志serilog
+var loggerConfiguration = new LoggerConfiguration()
+                            .ReadFrom.Configuration(builder.Configuration)
+                            .Enrich.FromLogContext()
+                            .WriteToConsole()
+                            .WriteToFile();
+Log.Logger = loggerConfiguration.CreateLogger();
+builder.Host.UseSerilog();
 
 var app = builder.Build();
 

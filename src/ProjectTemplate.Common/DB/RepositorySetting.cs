@@ -7,7 +7,7 @@ namespace ProjectTemplate.Common.DB
 {
     public static class RepositorySetting
     {
-        public static void SetTenantEntityFilter(SqlSugarProvider db, IUser user)
+        public static void SetTenantEntityFilter(SqlSugarScopeProvider db, IUser user)
         {
             //多租户 单表字段
             if (user != null && user.ID > 0 && user.TenantId > 0)

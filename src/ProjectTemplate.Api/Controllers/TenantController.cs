@@ -16,16 +16,19 @@ namespace ProjectTemplate.Api.Controllers
     {
         private readonly IBaseService<BusinessTable, BusinessTableDto> _baseService;
         private readonly IBaseService<MultiBusinessTable, MultiBusinessTableDto> _multiBusinessTableService;
-        private readonly IBaseService<SysTenant,SysTenantDto> _sysTenantService;
+        private readonly IBaseService<SubLibraryBusinessTable, SubLibraryBusinessTableDto> _subLibraryBusinessTableService;
+        private readonly IBaseService<SysTenant, SysTenantDto> _sysTenantService;
 
         public TenantController(
-            IBaseService<BusinessTable, BusinessTableDto> baseService, 
-            IBaseService<MultiBusinessTable, MultiBusinessTableDto> multiBusinessTableService, 
-            IBaseService<SysTenant, SysTenantDto> sysTenantService)
+            IBaseService<BusinessTable, BusinessTableDto> baseService,
+            IBaseService<MultiBusinessTable, MultiBusinessTableDto> multiBusinessTableService,
+            IBaseService<SysTenant, SysTenantDto> sysTenantService,
+            IBaseService<SubLibraryBusinessTable, SubLibraryBusinessTableDto> subLibraryBusinessTableService)
         {
             _baseService = baseService;
             _multiBusinessTableService = multiBusinessTableService;
             _sysTenantService = sysTenantService;
+            _subLibraryBusinessTableService = subLibraryBusinessTableService;
         }
 
         /// <summary>
@@ -52,7 +55,7 @@ namespace ProjectTemplate.Api.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Get3()
         {
-            return Ok(await _sysTenantService.Query());
+            return Ok(await _subLibraryBusinessTableService.Query());
         }
     }
 }

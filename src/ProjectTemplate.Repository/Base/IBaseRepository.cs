@@ -10,5 +10,7 @@ namespace ProjectTemplate.Repository.Base
         Task<List<long>> AddSplitAsync(TEntity entity);
         Task<List<TEntity>> QueryAsync();
         Task<List<TEntity>> QuerySplitAsync(Expression<Func<TEntity, bool>> whereExpression, string orderByFields = null);
+        Task<List<TEntity>> QuerySplitWithCacheAsync(Expression<Func<TEntity, bool>> whereExpression, string orderByFields = null);
+        Task<List<TEntity>> QueryWithCacheAsync();
     }
 }
